@@ -1,4 +1,6 @@
 import Button from '@mui/material/Button';
+import { LinearProgress } from "@mui/material";
+import CircularProgress from '@mui/material/CircularProgress';
 import React from 'react';
 import {
     DataGridPremium,
@@ -164,7 +166,7 @@ const GridBase = memo(({
 }) => {
     const [paginationModel, setPaginationModel] = useState({ pageSize: defaultPageSize, page: 0 });
     const [data, setData] = useState({ recordCount: 0, records: [], lookups: {} });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const forAssignment = !!onAssignChange;
     const rowsSelected = showRowsSelected;
     const [selection, setSelection] = useState([]);
@@ -315,7 +317,7 @@ const GridBase = memo(({
         const lookupMap = {};
         for (const column of baseColumnList) {
             const overrides = {};
-            if (column.headerName === null) {
+            if (column.headerName === null || column.excludeOnGrid) {
                 continue;
             }
             if (parent && column.lookup === parent) {
@@ -398,9 +400,9 @@ const GridBase = memo(({
             if (effectivePermissions?.edit) {
                 actions.push(<GridActionsCellItem icon={<Tooltip title="Edit">   <EditIcon /></Tooltip>} data-action={actionTypes.Edit} label="Edit" color="primary" />);
             }
-            if (effectivePermissions.add) {
-                actions.push(<GridActionsCellItem icon={<Tooltip title="Copy"><CopyIcon /> </Tooltip>} data-action={actionTypes.Copy} label="Copy" color="primary" />);
-            }
+            // if (effectivePermissions.add) {
+            //     actions.push(<GridActionsCellItem icon={<Tooltip title="Copy"><CopyIcon /> </Tooltip>} data-action={actionTypes.Copy} label="Copy" color="primary" />);
+            // }
             if (effectivePermissions.delete) {
                 actions.push(<GridActionsCellItem icon={<Tooltip title="Delete"><DeleteIcon /> </Tooltip>} data-action={actionTypes.Delete} label="Delete" color="error" />);
             }
@@ -775,7 +777,7 @@ const GridBase = memo(({
         })
         setSortModel(sort);
     }
-
+    
     return (
         <div style={gridStyle || customStyle}>
             <DataGridPremium
@@ -828,6 +830,10 @@ const GridBase = memo(({
                     panel: {
                         placement: "bottom-end"
                     },
+                    loadingOverlay: {
+                        variant: 'skeleton',
+                        noRowsVariant: 'skeleton',
+                      },
                 }}
                 hideFooterSelectedRowCount={rowsSelected}
                 density="compact"

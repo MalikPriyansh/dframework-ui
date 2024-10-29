@@ -19,6 +19,8 @@ require("core-js/modules/es.string.replace.js");
 require("core-js/modules/es.string.trim.js");
 require("core-js/modules/web.dom-collections.iterator.js");
 var _Button = _interopRequireDefault(require("@mui/material/Button"));
+var _material = require("@mui/material");
+var _CircularProgress = _interopRequireDefault(require("@mui/material/CircularProgress"));
 var _react = _interopRequireWildcard(require("react"));
 var _xDataGridPremium = require("@mui/x-data-grid-premium");
 var _Delete = _interopRequireDefault(require("@mui/icons-material/Delete"));
@@ -35,7 +37,6 @@ var _crudHelper = require("./crud-helper");
 var _propTypes = _interopRequireDefault(require("prop-types"));
 var _footer = require("./footer");
 var _template = _interopRequireDefault(require("./template"));
-var _material = require("@mui/material");
 var _Check = _interopRequireDefault(require("@mui/icons-material/Check"));
 var _Close = _interopRequireDefault(require("@mui/icons-material/Close"));
 var _core = require("@material-ui/core");
@@ -226,7 +227,7 @@ const GridBase = /*#__PURE__*/(0, _react.memo)(_ref2 => {
     records: [],
     lookups: {}
   });
-  const [isLoading, setIsLoading] = (0, _react.useState)(false);
+  const [isLoading, setIsLoading] = (0, _react.useState)(true);
   const forAssignment = !!onAssignChange;
   const rowsSelected = showRowsSelected;
   const [selection, setSelection] = (0, _react.useState)([]);
@@ -423,7 +424,7 @@ const GridBase = /*#__PURE__*/(0, _react.memo)(_ref2 => {
     const lookupMap = {};
     for (const column of baseColumnList) {
       const overrides = {};
-      if (column.headerName === null) {
+      if (column.headerName === null || column.excludeOnGrid) {
         continue;
       }
       if (parent && column.lookup === parent) {
@@ -524,16 +525,9 @@ const GridBase = /*#__PURE__*/(0, _react.memo)(_ref2 => {
           color: "primary"
         }));
       }
-      if (effectivePermissions.add) {
-        actions.push(/*#__PURE__*/_react.default.createElement(_xDataGridPremium.GridActionsCellItem, {
-          icon: /*#__PURE__*/_react.default.createElement(_material.Tooltip, {
-            title: "Copy"
-          }, /*#__PURE__*/_react.default.createElement(_FileCopy.default, null), " "),
-          "data-action": actionTypes.Copy,
-          label: "Copy",
-          color: "primary"
-        }));
-      }
+      // if (effectivePermissions.add) {
+      //     actions.push(<GridActionsCellItem icon={<Tooltip title="Copy"><CopyIcon /> </Tooltip>} data-action={actionTypes.Copy} label="Copy" color="primary" />);
+      // }
       if (effectivePermissions.delete) {
         actions.push(/*#__PURE__*/_react.default.createElement(_xDataGridPremium.GridActionsCellItem, {
           icon: /*#__PURE__*/_react.default.createElement(_material.Tooltip, {
@@ -1103,6 +1097,10 @@ const GridBase = /*#__PURE__*/(0, _react.memo)(_ref2 => {
       },
       panel: {
         placement: "bottom-end"
+      },
+      loadingOverlay: {
+        variant: 'skeleton',
+        noRowsVariant: 'skeleton'
       }
     },
     hideFooterSelectedRowCount: rowsSelected,
